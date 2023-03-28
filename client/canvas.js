@@ -4,7 +4,8 @@ export default class renderer {
     #MainCanvas;
     #ctx;
     #canvasSize;
-    #backgroundColor = '#FFFFFF';
+    #backgroundColor = '#6f6f6f';
+    CAMERA = new vec(0, 0);
     constructor() {
         this.#MainCanvas = document.createElement('canvas');
         this.#ctx = this.#MainCanvas.getContext('2d');
@@ -22,9 +23,7 @@ export default class renderer {
     }
 
     scaleCanvas() {
-        let w = window.innerWidth / this.#canvasSize.x;
-        let h = window.innerHeight / this.#canvasSize.y;
-        this.#MainCanvas.style.scale = w + ' ' + h;
+        
     }
 
     render() {
@@ -32,7 +31,8 @@ export default class renderer {
 
         this.#ctx.fillStyle = 'black';
         GameObject.GameObjects.forEach(gameobject => {
-            this.#ctx.fillRect((gameobject.position.x - gameobject.collider.x) * 10 + window.innerWidth / 2, (-gameobject.position.y - gameobject.collider.y) * 10 + window.innerHeight / 2, gameobject.collider.x * 20, gameobject.collider.y * 20);
+            
+            this.#ctx.fillRect(gameobject.position.x * 10 - gameobject.collider.x * 10 + this.#canvasSize.x / 2 - this.CAMERA.x * 10, -gameobject.position.y * 10 - gameobject.collider.y * 10 + this.#canvasSize.y / 2 + this.CAMERA.y * 10, gameobject.collider.x * 20, gameobject.collider.y * 20);
         })
     }
 

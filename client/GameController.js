@@ -12,6 +12,7 @@ export default class Game {
         this.Renderer = new renderer();
         Game.addUpdateHook(() => {
             GameObject.UpdatePhysics();
+            // this.Renderer.scaleCanvas();
             this.Renderer.render();
         });
         Game.#MainThread = setInterval(() => {

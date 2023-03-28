@@ -1,6 +1,7 @@
 import vec from "./Vec.js";
 
 export default class GameObject {
+    #id;
     static #LastPhysicsUpdate = Date.now();
     static GameObjects = [];
     name = "";
@@ -11,17 +12,17 @@ export default class GameObject {
     isSolid = true;
 
     constructor(options) {
-        if (options["name"]) name = options.name;
-        if (options["position"]) this.position = options.position;
-        if (options["collider"]) this.collider = options.collider;
-        if (options["hasGravity"]) this.hasGravity = options.hasGravity;
-        if (options["isSolid"]) this.isSolid = options.isSolid;
+        if ("name" in options) name = options.name;
+        if ("position" in options) this.position = options.position;
+        if ("collider" in options) this.collider = options.collider;
+        if ("hasGravity" in options) this.hasGravity = options.hasGravity;
+        if ("isSolid" in options) this.isSolid = options.isSolid;
         GameObject.GameObjects.push(this);
     }
 
     isColliding(other=GameObject) {
-        let x = other.prototype.position.x - other.prototype.collider.x < this.position.x + this.collider.x && other.prototype.position.x + other.prototype.collider.x > this.position.x - this.collider.x;
-        let y = other.prototype.position.y - other.prototype.collider.y < this.position.y + this.collider.y && other.prototype.position.y + other.prototype.collider.y > this.position.y - this.collider.y;
+        let x = other.position.x - other.collider.x < this.position.x + this.collider.x && other.position.x + other.collider.x > this.position.x - this.collider.x;
+        let y = other.position.y - other.collider.y < this.position.y + this.collider.y && other.position.y + other.collider.y > this.position.y - this.collider.y;
         return x && y;
     }
 
@@ -40,6 +41,10 @@ export default class GameObject {
         this.velocity = new vec(0, 0);
     }
 
+    ShouldCheck(other = GameObject) {
+        return other.position.fakeDistance(this.position) < 2000;
+    }
+
     static UpdatePhysics() {
         let delta = (Date.now() - this.#LastPhysicsUpdate) / 1000.0;
         this.#LastPhysicsUpdate = Date.now();
@@ -50,6 +55,7 @@ export default class GameObject {
             if (gameobject.isSolid) {
                 for(let i = 0; i < this.GameObjects.length; i++) {
                     if (gameobject === this.GameObjects[i] || !this.GameObjects[i].isSolid) continue;
+                    else if (!gameobject.ShouldCheck(this.GameObjects[i])) continue;
                     else if (gameobject.isColliding(this.GameObjects[i])) {
                         gameobject.UndoUpdatePosition(delta);
                         break;
