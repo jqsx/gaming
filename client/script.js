@@ -5,7 +5,7 @@ import vec from "./Vec.js";
 const game = new Game();
 document.body.appendChild(game.Renderer.getCanvas());
 
-const ground = new GameObject({ position: new vec(2, 3), collider: new vec(50, 3), hasGravity: false });
+const ground = new GameObject({ position: new vec(0, -40), collider: new vec(160, 10), hasGravity: false });
 const player = new GameObject({ position: new vec(2, 10) });
 new GameObject({ position: new vec(2, 14) });
 
@@ -26,5 +26,5 @@ document.addEventListener('keyup', ev => {
 })
 
 Game.addUpdateHook(() => {
-    player.position.x += x * game.deltaTime;
+    player.velocity.x += x * game.deltaTime * 5;
 });

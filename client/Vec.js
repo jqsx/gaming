@@ -4,8 +4,31 @@ export default class vec {
         this.y = y;
     }
 
+    clone() {
+        return new vec(this.x, this.y);
+    }
+
+    clamp(n, min, max) {
+        return Math.max(Math.min(n, max), min);
+    }
+
     add(vector = vec) {
         return new vec(this.x + vector.x, this.y + vector.y)
+    }
+
+    Add(vector = vec) {
+        this.x += vector.x;
+        this.y += vector.y;
+    }
+
+    Subtract(vector = vec) {
+        this.x -= vector.x;
+        this.y -= vector.y;
+    }
+
+    Multiply(vector = vec) {
+        this.x *= vector.x;
+        this.y *= vector.y;
     }
 
     subtract(vector = vec) {
@@ -18,8 +41,6 @@ export default class vec {
     divide(vector = vec) {
         return new vec(this.x / vector.x, this.y / vector.y)
     }
-
-
 
     normalize() { // funky math
         return new vec(this.x / this.mag(), this.y / this.mag());
