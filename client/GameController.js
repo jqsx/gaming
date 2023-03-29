@@ -7,6 +7,8 @@ export default class Game {
     #canvas;
     static #MainThread;
     Renderer;
+    deltaTime = 0;
+    #lastUpdate = Date.now();
     constructor() {
         Game.MainGame = this;
         this.Renderer = new renderer();
@@ -21,6 +23,8 @@ export default class Game {
     }
 
     #Update() {
+        this.deltaTime = (Date.now() - this.#lastUpdate) / 1000.0;
+        this.#lastUpdate = Date.now();
         Game.#Updates.forEach(u => {
             if (u instanceof Function) {
                 u();
