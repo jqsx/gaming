@@ -1,4 +1,6 @@
 export default class vec {
+    x = Number;
+    y = Number;
     constructor(x = number, y = number) {
         this.x = x;
         this.y = y;
@@ -51,7 +53,8 @@ export default class vec {
     }
 
     fakeMag() {
-        return this.x + this.y;
+        let a = this.abs();
+        return a.x + a.y;
     }
 
     distance(other = vec) {
@@ -68,6 +71,10 @@ export default class vec {
 
     compare(other = vec) {
         return other.x === this.x && other.y === this.y;
+    }
+
+    abs() {
+        return new vec(Math.abs(this.x), Math.abs(this.y));
     }
 
     isNaN() {
