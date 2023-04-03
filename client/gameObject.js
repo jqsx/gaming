@@ -48,6 +48,17 @@ export default class GameObject {
         return x && y;
     }
 
+    _isCollidingX(other=GameObject) {
+        return other.position.x - other.collider.x < this.position.x + this.collider.x &&
+        other.position.x + other.collider.x > this.position.x - this.collider.x;
+    }
+
+    _isCollidingY(other=GameObject) {
+        return other.position.y - other.collider.y < this.position.y + this.collider.y &&
+        other.position.y + other.collider.y > this.position.y - this.collider.y;
+    }
+
+
     UpdateVelocity(delta) {
         if (this.hasGravity && this.hasPhysics) this.velocity.y -= delta * 5;
     }
@@ -72,6 +83,7 @@ export default class GameObject {
     static UpdatePhysics() {
         let delta = (Date.now() - this.#LastPhysicsUpdate) / 1000.0;
         this.#LastPhysicsUpdate = Date.now();
+        if (delta >= 1) return;
         this.GameObjects.forEach((gameobject) => {
             if (!(gameobject instanceof GameObject)) return;
             let old = gameobject.position.clone();
@@ -86,14 +98,22 @@ export default class GameObject {
                         //gameobject.UndoUpdatePosition(delta);
                         // let diff = old.subtract(gameobject.position);
                         // let diff = this.GameObjects[i].position.divide(this.GameObjects[i].collider).subtract(gameobject.position.divide(gameobject.collider));
-                        // let diff = old.subtract(gameobject.position.divide(this.GameObjects[i].collider));
+                        let diff = old.subtract(gameobject.position.divide(this.GameObjects[i].collider));
                         if (Math.abs(diff.x) > Math.abs(diff.y)) {
                             gameobject.position.y = old.y;
                             gameobject.velocity.y *= -0.5;
+                            if (gameobject._isCollidingY(this.GameObjects[i])) {
+                                gameobject.position.x = old.x;
+                                gameobject.velocity.x *= 0.5;
+                            }
                         }
                         else {
                             gameobject.position.x = old.x;
-                            gameobject.velocity.x *= -0.5;
+                            gameobject.velocity.x *= 0.5;
+                            if (gameobject._isCollidingX(this.GameObjects[i])) {
+                                gameobject.position.y = old.y;
+                                gameobject.velocity.y *= -0.5;
+                            }
                         }
                         if (gameobject.isColliding(this.GameObjects[i])) gameobject.position = old.clone();
                     }
